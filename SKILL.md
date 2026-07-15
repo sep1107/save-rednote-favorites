@@ -19,7 +19,7 @@ Copy each favorite share link into Xiaohongshu Importer Plus and verify every im
 
 1. Use Computer Use and its confirmation policy.
 2. Use the native Rednote app and installed Obsidian plugin Xiaohongshu Importer Plus (xhs-importer).
-3. Resolve Rednote with rednote, then com.xingin.discover. If ambiguous, use the running app's current full path from list_apps(). Never reuse a temporary Wrapper path from another run; stop if the current path cannot be resolved reliably.
+3. Resolve Rednote with rednote, then com.xingin.discover. If either is unavailable or ambiguous, derive the current running `.../Wrapper/discover.app` parent from the `discover` process command, then verify `get_app_state` succeeds and reports the Rednote window. Never record, reuse, or infer a Wrapper path from another run; stop if the current path cannot be resolved and verified.
 4. Read .obsidian/plugins/xhs-importer/data.json. Follow noteFolder, imageFolder, and downloadMedia without changing them.
 5. Stop if either app is unavailable or Rednote is logged out.
 
