@@ -1,4 +1,4 @@
 interface:
   display_name: "保存小红书收藏"
-  short_description: "从小红书 App 复制收藏链接并交给 Obsidian 插件自动导入"
-  default_prompt: "使用 $save-rednote-favorites，通过 Obsidian 小红书插件导入最近 5 条收藏，不保存截图。"
+  short_description: "从当前小红书收藏视图向下交给 Obsidian 插件归档"
+  default_prompt: "使用 $save-rednote-favorites，从我当前视口最上方第一张完整可见的卡片开始向下导入 5 条；不得回到顶部，位置丢失时立即停止，不保存截图。"

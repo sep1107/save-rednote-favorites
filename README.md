@@ -6,9 +6,11 @@
 
 ## 主要功能
 
-- 按小红书“收藏 > 笔记”当前网格顺序导入。
+- 支持把用户手动带到的当前视图作为唯一开始位置，只向下逐视口导入。
 - 使用原始分享 URL 去重，避免重复生成笔记。
+- 粘贴后核对当前卡片，拒绝小红书“复制成功”但剪贴板仍是上一条的情况。
 - 每条导入后立即核对 URL、Markdown 文件和账本记录。
+- 为视频等异步导入等待最多 90 秒，避免文件尚未落盘就误报失败或重复提交。
 - 长批次自动按最多 20 条分段检查。
 - 支持中断后从最后一条有效账本记录继续。
 - 重置收藏目录时保护保留笔记引用的附件。
@@ -21,6 +23,7 @@
 - 已安装并启用 Xiaohongshu Importer Plus 插件。
 - 已在 Obsidian 快捷键设置中为命令 ID `xhs-importer:import` 配置快捷键。
 - Codex 的 Computer Use 能力。
+- 允许 Skill 通过只读进程查询实时解析当前小红书 `Wrapper/discover.app` 路径；沙箱阻止 `ps` 时需为随附解析脚本授权。
 - Node.js，用于运行导入结果审计脚本。
 
 Skill 会读取插件的 data.json 配置，并遵循其中的 noteFolder、imageFolder 和 downloadMedia，不会擅自修改插件设置。
@@ -78,6 +81,12 @@ git -C ~/.codex/skills/save-rednote-favorites pull --ff-only
 使用 $save-rednote-favorites，继续导入接下来的 20 条小红书收藏。
 ~~~
 
+从已经手动定位的当前视图继续，只向下导入：
+
+~~~text
+使用 $save-rednote-favorites，从我当前视口最上方第一张完整可见的卡片开始，按从左到右、从上到下继续导入 20 条；不得回到顶部，位置丢失时立即停止。
+~~~
+
 检查现有导入结果：
 
 ~~~text
@@ -111,9 +120,11 @@ node ~/.codex/skills/save-rednote-favorites/scripts/audit_imports.mjs "/path/to/
 
 - 不点赞、评论、关注、转发、私信或取消收藏。
 - 分享面板只选择“复制链接”。
+- “复制成功”后仍以 Obsidian 导入框中的实际内容为准；内容与当前卡片不符时不提交。
 - 不手工下载、转录、总结或截图小红书正文。
 - 由 Obsidian 插件负责生成笔记和配置范围内的媒体。
 - 不访问 Obsidian 库中的隐私禁区。
+- 当前位置模式一旦丢失滚动位置就停止，不回到顶部重跑。
 - 连续三次界面操作失败后停止，不盲目重试。
 
 ## 目录结构
@@ -125,5 +136,6 @@ save-rednote-favorites/
 ├── agents/
 │   └── openai.yaml
 └── scripts/
-    └── audit_imports.mjs
+    ├── audit_imports.mjs
+    └── resolve_rednote_wrapper.sh
 ~~~
